@@ -1,6 +1,10 @@
 name: flutter_storage_info
 description: "Flutter plugin to get storage info of the device."
+<<<<<<< HEAD
 version: 0.0.3
+=======
+version: 0.0.1
+>>>>>>> 535a1c58b1c7dc832e79f98f9e0017a5b60bb06c
 homepage: https://github.com/JaberQayad/flutter_storage_info.git
 
 environment:
