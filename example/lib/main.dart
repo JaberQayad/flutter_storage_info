@@ -28,7 +28,7 @@ class MyHomePageState extends State<MyHomePage> {
   late int _storageFreeSpace = 0;
   late int _storageUsedSpace = 0;
   late int _storageTotalSpace = 0;
- late final FlutterStorageInfo _flutterStorageInfo = FlutterStorageInfo();
+  late final FlutterStorageInfo _flutterStorageInfo = FlutterStorageInfo();
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,7 @@ class MyHomePageState extends State<MyHomePage> {
 
       setState(() {
         _storageFreeSpace = freeSpace ?? 0; // in bytes
-        _storageUsedSpace =  usedSpace ?? 0; // in bytes
+        _storageUsedSpace = usedSpace ?? 0; // in bytes
         _storageTotalSpace = totalSpace ?? 0; // in bytes
       });
     } catch (e) {
@@ -52,7 +52,6 @@ class MyHomePageState extends State<MyHomePage> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

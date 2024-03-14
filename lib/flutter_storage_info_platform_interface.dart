@@ -8,7 +8,8 @@ abstract class FlutterStorageInfoPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static FlutterStorageInfoPlatform _instance = MethodChannelFlutterStorageInfo();
+  static FlutterStorageInfoPlatform _instance =
+      MethodChannelFlutterStorageInfo();
 
   /// The default instance of [FlutterStorageInfoPlatform] to use.
   ///
@@ -36,67 +37,82 @@ abstract class FlutterStorageInfoPlatform extends PlatformInterface {
   }
 
   Future<int?> getStorageTotalSpace() {
-    throw UnimplementedError('getStorageTotalSpace() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageTotalSpace() has not been implemented.');
   }
 
   Future<int?> getExternalStorageTotalSpace() {
-    throw UnimplementedError('getExternalStorageTotalSpace() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageTotalSpace() has not been implemented.');
   }
 
   Future<int?> getExternalStorageFreeSpace() {
-    throw UnimplementedError('getExternalStorageFreeSpace() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageFreeSpace() has not been implemented.');
   }
 
   Future<int?> getExternalStorageUsedSpace() {
-    throw UnimplementedError('getExternalStorageUsedSpace() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageUsedSpace() has not been implemented.');
   }
 
   Future<double?> getStorageFreeSpaceInMB() {
-    throw UnimplementedError('getStorageFreeSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageFreeSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getStorageUsedSpaceInMB() {
-    throw UnimplementedError('getStorageUsedSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageUsedSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getStorageTotalSpaceInMB() {
-    throw UnimplementedError('getStorageTotalSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageTotalSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getStorageFreeSpaceInGB() {
-    throw UnimplementedError('getStorageFreeSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageFreeSpaceInGB() has not been implemented.');
   }
 
   Future<double?> getStorageUsedSpaceInGB() {
-    throw UnimplementedError('getStorageUsedSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageUsedSpaceInGB() has not been implemented.');
   }
 
   Future<double?> getStorageTotalSpaceInGB() {
-    throw UnimplementedError('getStorageTotalSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getStorageTotalSpaceInGB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageTotalSpaceInMB() {
-    throw UnimplementedError('getExternalStorageTotalSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageTotalSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageFreeSpaceInMB() {
-    throw UnimplementedError('getExternalStorageFreeSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageFreeSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageUsedSpaceInMB() {
-    throw UnimplementedError('getExternalStorageUsedSpaceInMB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageUsedSpaceInMB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageTotalSpaceInGB() {
-    throw UnimplementedError('getExternalStorageTotalSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageTotalSpaceInGB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageFreeSpaceInGB() {
-    throw UnimplementedError('getExternalStorageFreeSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageFreeSpaceInGB() has not been implemented.');
   }
 
   Future<double?> getExternalStorageUsedSpaceInGB() {
-    throw UnimplementedError('getExternalStorageUsedSpaceInGB() has not been implemented.');
+    throw UnimplementedError(
+        'getExternalStorageUsedSpaceInGB() has not been implemented.');
   }
-
 }
