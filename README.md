@@ -11,7 +11,7 @@ To use this plugin, add `flutter_storage_info` as a [dependency in your pubspec.
 
 ```yaml
 dependencies:
-  flutter_storage_info: ^0.0.4
+  flutter_storage_info: ^0.0.5
 ```
 
 ```dart

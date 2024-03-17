@@ -1,6 +1,6 @@
 name: flutter_storage_info
-description: Flutter plugin for retrieving storage information. Easily get details on device storage usage. Reliable and efficient."
-version: 0.0.4
+description: Flutter plugin for retrieving storage information. Easily get details on device storage usage. Reliable and efficient.
+version: 0.0.5
 homepage: https://github.com/JaberQayad/flutter_storage_info.git
 
 repository: https://github.com/JaberQayad/flutter_storage_info.git
