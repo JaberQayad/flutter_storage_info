@@ -1,187 +1,356 @@
 package com.example.flutter_storage_info
 
-import androidx.annotation.NonNull
+import android.content.Context
+import android.os.Environment
+import android.os.StatFs
+import androidx.core.content.ContextCompat.getExternalFilesDirs
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
-import android.os.Environment
-import android.content.Context
-import android.os.StatFs
-import java.io.File
-import androidx.core.content.ContextCompat.getExternalFilesDirs
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.io.File
 
-/** FlutterStorageInfoPlugin */
-class FlutterStorageInfoPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+/** A Flutter plugin to retrieve information about device storage. */
+class FlutterStorageInfoPlugin : FlutterPlugin, MethodCallHandler {
+    private lateinit var channel: MethodChannel
     private lateinit var context: Context
 
-  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_storage_info")
-    channel.setMethodCallHandler(this)
-    context = flutterPluginBinding.applicationContext
-  }
-
-  override fun onMethodCall(call: MethodCall, result: Result) {
-   if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-  }else if (call.method == "getStorageFreeSpace") {
-      result.success(getStorageFreeSpace())
-    } else if (call.method == "getStorageUsedSpace") {
-      result.success(getStorageUsedSpace())
-    } else if (call.method == "getStorageTotalSpace") {
-      result.success(getStorageTotalSpace())
-    } else if (call.method == "getExternalStorageTotalSpace") {
-      result.success(getExternalStorageTotalSpace())
-    } else if (call.method == "getExternalStorageFreeSpace") {
-      result.success(getExternalStorageFreeSpace())
-    } else if (call.method == "getExternalStorageUsedSpace") {
-      result.success(getExternalStorageUsedSpace())
-    } else if (call.method == "getStorageFreeSpaceInMB") {
-      result.success(getStorageFreeSpaceInMB())
-    } else if (call.method == "getStorageUsedSpaceInMB") {
-      result.success(getStorageUsedSpaceInMB())
-    } else if (call.method == "getStorageTotalSpaceInMB") {
-      result.success(getStorageTotalSpaceInMB())
-    } else if (call.method == "getStorageFreeSpaceInGB") {
-      result.success(getStorageFreeSpaceInGB())
-    } else if (call.method == "getStorageUsedSpaceInGB") {
-      result.success(getStorageUsedSpaceInGB())
-    } else if (call.method == "getStorageTotalSpaceInGB") {
-      result.success(getStorageTotalSpaceInGB())
-    } else if (call.method == "getExternalStorageTotalSpaceInMB") {
-      result.success(getExternalStorageTotalSpaceInMB())
-    } else if (call.method == "getExternalStorageFreeSpaceInMB") {
-      result.success(getExternalStorageFreeSpaceInMB())
-    } else if (call.method == "getExternalStorageUsedSpaceInMB") {
-      result.success(getExternalStorageUsedSpaceInMB())
-    } else if (call.method == "getExternalStorageTotalSpaceInGB") {
-      result.success(getExternalStorageTotalSpaceInGB())
-    } else if (call.method == "getExternalStorageFreeSpaceInGB") {
-      result.success(getExternalStorageFreeSpaceInGB())
-    } else if (call.method == "getExternalStorageUsedSpaceInGB") {
-      result.success(getExternalStorageUsedSpaceInGB())
-    } else {
-      result.notImplemented()
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_storage_info")
+        channel.setMethodCallHandler(this)
+        context = flutterPluginBinding.applicationContext
     }
+
+    override fun onMethodCall(call: MethodCall, result: Result) {
+        when (call.method) {
+            // Internal storage
+            "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
+            "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
+            "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
+            // External storage
+            "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
+            "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
+            "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
+            // Storage space in MB
+            "getStorageFreeSpaceInMB" -> result.success(getStorageFreeSpaceInMB())
+            "getStorageUsedSpaceInMB" -> result.success(getStorageUsedSpaceInMB())
+            "getStorageTotalSpaceInMB" -> result.success(getStorageTotalSpaceInMB())
+            // Storage space in GB
+            "getStorageFreeSpaceInGB" -> result.success(getStorageFreeSpaceInGB())
+            "getStorageUsedSpaceInGB" -> result.success(getStorageUsedSpaceInGB())
+            "getStorageTotalSpaceInGB" -> result.success(getStorageTotalSpaceInGB())
+            // External storage space in MB
+            "getExternalStorageTotalSpaceInMB" -> result.success(getExternalStorageTotalSpaceInMB())
+            "getExternalStorageFreeSpaceInMB" -> result.success(getExternalStorageFreeSpaceInMB())
+            "getExternalStorageUsedSpaceInMB" -> result.success(getExternalStorageUsedSpaceInMB())
+            // External storage space in GB
+            "getExternalStorageTotalSpaceInGB" -> result.success(getExternalStorageTotalSpaceInGB())
+            "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
+            "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
+            // Directory size
+            "getSizeOfDirectoryInMB" -> {
+                val directory: String? = call.argument("directory")
+                if (directory != null) {
+                    result.success(getSizeOfDirectoryInMB(directory))
+                } else {
+                    result.error("MISSING_DIRECTORY", "Directory path argument is missing", null)
+                }
+            }
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun getStorageTotalSpace(): Long {
+        val path: File = Environment.getExternalStorageDirectory()
+        val stat = StatFs(path.path)
+        return stat.totalBytes
+    }
+
+    private fun getStorageFreeSpace(): Long {
+        val path: File = Environment.getExternalStorageDirectory()
+        val stat = StatFs(path.path)
+        return stat.availableBytes
+    }
+
+    private fun getStorageUsedSpace(): Long {
+        return getStorageTotalSpace() - getStorageFreeSpace()
+    }
+
+    private fun getExternalStorageTotalSpace(): Long {
+        val dirs: Array<File> = getExternalFilesDirs(context, null)
+        val stat = StatFs(getBaseStoragePath(dirs[1]))
+        return stat.totalBytes
+    }
+
+    private fun getExternalStorageFreeSpace(): Long {
+        val dirs: Array<File> = getExternalFilesDirs(context, null)
+        val stat = StatFs(getBaseStoragePath(dirs[1]))
+        return stat.availableBytes
+    }
+
+    private fun getExternalStorageUsedSpace(): Long {
+        return getExternalStorageTotalSpace() - getExternalStorageFreeSpace()
+    }
+
+    private fun getStorageFreeSpaceInMB(): Double {
+        return getStorageFreeSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getStorageUsedSpaceInMB(): Double {
+        return getStorageUsedSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getStorageTotalSpaceInMB(): Double {
+        return getStorageTotalSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getStorageFreeSpaceInGB(): Double {
+        return getStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getStorageUsedSpaceInGB(): Double {
+        return getStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getStorageTotalSpaceInGB(): Double {
+        return getStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getExternalStorageTotalSpaceInMB(): Double {
+        return getExternalStorageTotalSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getExternalStorageFreeSpaceInMB(): Double {
+        return getExternalStorageFreeSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getExternalStorageUsedSpaceInMB(): Double {
+        return getExternalStorageUsedSpace().toDouble() / 1024 / 1024
+    }
+
+    private fun getExternalStorageTotalSpaceInGB(): Double {
+        return getExternalStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getExternalStorageFreeSpaceInGB(): Double {
+        return getExternalStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getExternalStorageUsedSpaceInGB(): Double {
+        return getExternalStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
+    }
+
+    private fun getSizeOfDirectoryInMB(directory: String): Double {
+        return File(directory)
+            .walkTopDown()
+            .map { it.length() }
+            .sum().toDouble() / 1024 / 1024
+    }
+
+    private fun getBaseStoragePath(directory: File): String {
+        return if (!directory.path.contains("Android")) {
+            directory.path
+        } else {
+            directory.path.split("Android")[0]
+        }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
-
-
-
-    fun getStorageTotalSpace(): Long{
-        val path = Environment.getDataDirectory()
-        val stat = StatFs(path.path)
-        return stat.totalBytes
-    }
-
-    fun getStorageFreeSpace(): Long{
-        val path = Environment.getDataDirectory()
-        val stat = StatFs(path.path)
-        return stat.availableBytes
-    }
-
-    fun getStorageUsedSpace(): Long{
-        val usedSpace: Long = getStorageTotalSpace() - getStorageFreeSpace()
-        return usedSpace
-    }
-
-    fun getExternalStorageTotalSpace(): Long{
-        val dirs: Array<File> = getExternalFilesDirs(context, null)
-        val stat = StatFs(dirs[1].path.split("Android")[0])
-        return stat.totalBytes
-    }
-
-    fun getExternalStorageFreeSpace(): Long{
-        val dirs: Array<File> = getExternalFilesDirs(context, null)
-        val stat = StatFs(dirs[1].path.split("Android")[0])
-        return stat.availableBytes
-    }
-
-    fun getExternalStorageUsedSpace(): Long{
-        val usedSpace: Long = getExternalStorageTotalSpace() - getExternalStorageFreeSpace()
-        return usedSpace
-    }
-
-    // Storage space in MB
-    fun getStorageFreeSpaceInMB(): Double{
-        val freeSpace: Double = getStorageFreeSpace().toDouble() / 1024 / 1024
-        return roundNumberTo2DecimalPlace(freeSpace)
-    }
-
-    fun getStorageUsedSpaceInMB(): Double{
-        val usedSpace: Double = getStorageUsedSpace().toDouble() / 1024 /  1024
-        return roundNumberTo2DecimalPlace(usedSpace)
-    }
-
-    fun getStorageTotalSpaceInMB(): Double{
-        val totalSpace: Double = getStorageTotalSpace().toDouble() / 1024 /  1024
-        return roundNumberTo2DecimalPlace(totalSpace)
-    }
-
-    // Storage space in GB
-    fun getStorageFreeSpaceInGB(): Double{
-        val freeSpace: Double = getStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
-        return roundNumberTo2DecimalPlace(freeSpace)
-    }
-
-    fun getStorageUsedSpaceInGB(): Double{
-        val usedSpace: Double = getStorageUsedSpace().toDouble() / 1024 /  1024 / 1024
-        return roundNumberTo2DecimalPlace(usedSpace)
-    }
-
-    fun getStorageTotalSpaceInGB(): Double{
-        val totalSpace: Double = getStorageTotalSpace().toDouble() / 1024 /  1024 / 1024
-        return roundNumberTo2DecimalPlace(totalSpace)
-    }
-
-    // External storage in MB
-    fun getExternalStorageFreeSpaceInMB(): Double{
-        val freeSpace: Double = getExternalStorageFreeSpace().toDouble() / 1024 / 1024
-        return roundNumberTo2DecimalPlace(freeSpace)
-    }
-
-    fun getExternalStorageUsedSpaceInMB(): Double{
-        val usedSpace: Double = getExternalStorageUsedSpace().toDouble() / 1024 / 1024
-        return roundNumberTo2DecimalPlace(usedSpace)
-    }
-
-    fun getExternalStorageTotalSpaceInMB(): Double{
-        val totalSpace: Double = getExternalStorageTotalSpace().toDouble() / 1024 / 1024
-        return roundNumberTo2DecimalPlace(totalSpace)
-    }
-
-    // External storage in GB
-
-    fun getExternalStorageFreeSpaceInGB(): Double{
-        val freeSpace: Double = getExternalStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
-        return roundNumberTo2DecimalPlace(freeSpace)
-    }
-
-
-    fun getExternalStorageUsedSpaceInGB(): Double{
-        val usedSpace: Double = getExternalStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
-        return roundNumberTo2DecimalPlace(usedSpace)
-    }
-
-
-    fun getExternalStorageTotalSpaceInGB(): Double{
-        val totalSpace: Double = getExternalStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
-        return roundNumberTo2DecimalPlace(totalSpace)
-    }
-
-    fun roundNumberTo2DecimalPlace(value: Double) : Double {
-        val number2digits: Double = String.format("%.2f", value).toDouble()
-        return number2digits
-    }
-
-
 }
+
+
+//package com.example.flutter_storage_info
+//
+//
+//import android.content.Context
+//import android.os.Environment
+//import android.os.StatFs
+//import androidx.core.content.ContextCompat.getExternalFilesDirs
+//import io.flutter.embedding.engine.plugins.FlutterPlugin
+//import io.flutter.plugin.common.MethodCall
+//import io.flutter.plugin.common.MethodChannel
+//import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+//import io.flutter.plugin.common.MethodChannel.Result
+//import java.io.File
+//
+///** A Flutter plugin to retrieve information about device storage. */
+///** FlutterStorageInfoPlugin */
+//class FlutterStorageInfoPlugin: FlutterPlugin, MethodCallHandler {
+//  /// The MethodChannel that will the communication between Flutter and native Android
+//  ///
+//  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+//  /// when the Flutter Engine is detached from the Activity
+//  private lateinit var channel : MethodChannel
+//    private lateinit var context: Context
+//
+//  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+//    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_storage_info")
+//    channel.setMethodCallHandler(this)
+//    context = flutterPluginBinding.applicationContext
+//  }
+//    /** Handles incoming method calls */
+//    override fun onMethodCall(call: MethodCall, result: Result) {
+//        when (call.method) {
+//            // Internal storage
+//            "getStorageFreeSpace" -> result.success(getStorageFreeSpace())
+//            "getStorageUsedSpace" -> result.success(getStorageUsedSpace())
+//            "getStorageTotalSpace" -> result.success(getStorageTotalSpace())
+//            // External storage
+//            "getExternalStorageTotalSpace" -> result.success(getExternalStorageTotalSpace())
+//            "getExternalStorageFreeSpace" -> result.success(getExternalStorageFreeSpace())
+//            "getExternalStorageUsedSpace" -> result.success(getExternalStorageUsedSpace())
+//            // Storage space in MB
+//            "getStorageFreeSpaceInMB" -> result.success(getStorageFreeSpaceInMB())
+//            "getStorageUsedSpaceInMB" -> result.success(getStorageUsedSpaceInMB())
+//            "getStorageTotalSpaceInMB" -> result.success(getStorageTotalSpaceInMB())
+//            // Storage space in GB
+//            "getStorageFreeSpaceInGB" -> result.success(getStorageFreeSpaceInGB())
+//            "getStorageUsedSpaceInGB" -> result.success(getStorageUsedSpaceInGB())
+//            "getStorageTotalSpaceInGB" -> result.success(getStorageTotalSpaceInGB())
+//            // External storage space in MB
+//            "getExternalStorageTotalSpaceInMB" -> result.success(getExternalStorageTotalSpaceInMB())
+//            "getExternalStorageFreeSpaceInMB" -> result.success(getExternalStorageFreeSpaceInMB())
+//            "getExternalStorageUsedSpaceInMB" -> result.success(getExternalStorageUsedSpaceInMB())
+//            // External storage space in GB
+//            "getExternalStorageTotalSpaceInGB" -> result.success(getExternalStorageTotalSpaceInGB())
+//            "getExternalStorageFreeSpaceInGB" -> result.success(getExternalStorageFreeSpaceInGB())
+//            "getExternalStorageUsedSpaceInGB" -> result.success(getExternalStorageUsedSpaceInGB())
+//            // Directory size
+//            "getSizeOfDirectoryInMB" -> {
+//                val directory: String? = call.argument("directory")
+//                if (directory != null) {
+//                    result.success(getSizeOfDirectoryInMB(directory))
+//                } else {
+//                    result.error("DIRECTORY_NULL", "Directory argument is null", null)
+//                }
+//
+//            else -> result.notImplemented()
+//        }
+//    }
+//
+//    /** Retrieves total space of internal storage */
+//    private fun getStorageTotalSpace(): Long {
+//        val path: File = Environment.getExternalStorageDirectory()
+//        val stat = StatFs(path.path)
+//        return stat.totalBytes
+//    }
+//
+//    /** Retrieves free space of internal storage */
+//    private fun getStorageFreeSpace(): Long {
+//        val path: File = Environment.getExternalStorageDirectory()
+//        val stat = StatFs(path.path)
+//        return stat.availableBytes
+//    }
+//
+//    /** Retrieves used space of internal storage */
+//    private fun getStorageUsedSpace(): Long {
+//        return getStorageTotalSpace() - getStorageFreeSpace()
+//    }
+//
+//    /** Retrieves total space of external storage */
+//    private fun getExternalStorageTotalSpace(): Long {
+//        val dirs: Array<File> = getExternalFilesDirs(context, null)
+//        val stat = StatFs(getBaseStoragePath(dirs[1]))
+//        return stat.totalBytes
+//    }
+//
+//    /** Retrieves free space of external storage */
+//    private fun getExternalStorageFreeSpace(): Long {
+//        val dirs: Array<File> = getExternalFilesDirs(context, null)
+//        val stat = StatFs(getBaseStoragePath(dirs[1]))
+//        return stat.availableBytes
+//    }
+//
+//    /** Retrieves used space of external storage */
+//    private fun getExternalStorageUsedSpace(): Long {
+//        return getExternalStorageTotalSpace() - getExternalStorageFreeSpace()
+//    }
+//
+//    /** Retrieves free space of internal storage in MB */
+//    private fun getStorageFreeSpaceInMB(): Double {
+//        return getStorageFreeSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves used space of internal storage in MB */
+//    private fun getStorageUsedSpaceInMB(): Double {
+//        return getStorageUsedSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves total space of internal storage in MB */
+//    private fun getStorageTotalSpaceInMB(): Double {
+//        return getStorageTotalSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves free space of internal storage in GB */
+//    private fun getStorageFreeSpaceInGB(): Double {
+//        return getStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves used space of internal storage in GB */
+//    private fun getStorageUsedSpaceInGB(): Double {
+//        return getStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves total space of internal storage in GB */
+//    private fun getStorageTotalSpaceInGB(): Double {
+//        return getStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves free space of external storage in MB */
+//    private fun getExternalStorageFreeSpaceInMB(): Double {
+//        return getExternalStorageFreeSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves used space of external storage in MB */
+//    private fun getExternalStorageUsedSpaceInMB(): Double {
+//        return getExternalStorageUsedSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves total space of external storage in MB */
+//    private fun getExternalStorageTotalSpaceInMB(): Double {
+//        return getExternalStorageTotalSpace().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Retrieves free space of external storage in GB */
+//    private fun getExternalStorageFreeSpaceInGB(): Double {
+//        return getExternalStorageFreeSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves used space of external storage in GB */
+//    private fun getExternalStorageUsedSpaceInGB(): Double {
+//        return getExternalStorageUsedSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves total space of external storage in GB */
+//    private fun getExternalStorageTotalSpaceInGB(): Double {
+//        return getExternalStorageTotalSpace().toDouble() / 1024 / 1024 / 1024
+//    }
+//
+//    /** Retrieves the size of a directory in MB */
+//    private fun getSizeOfDirectoryInMB(directory: String): Double {
+//        return File(directory)
+//            .walkTopDown()
+//            .map { it.length() }
+//            .sum().toDouble() / 1024 / 1024
+//    }
+//
+//    /** Extracts base storage path */
+//    private fun getBaseStoragePath(directory: File): String {
+//        // Handle cases where this is already the root dir
+//        return if (!directory.path.contains("Android")) {
+//            directory.path
+//        } else {
+//            directory.path.split("Android")[0]
+//        }
+//    }
+//
+//    /** Called when the plugin is detached from the FlutterEngine */
+//    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+//        channel.setMethodCallHandler(null)
+//    }
+//
+//
+//    }

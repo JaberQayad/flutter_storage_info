@@ -1,85 +1,201 @@
-import 'flutter_storage_info_platform_interface.dart';
+import 'dart:async';
 
+import 'package:flutter/services.dart';
+
+
+/// A class providing methods to retrieve storage information.
 class FlutterStorageInfo {
-  Future<String?> getPlatformVersion() {
-    return FlutterStorageInfoPlatform.instance.getPlatformVersion();
+  static const MethodChannel _channel = MethodChannel('flutter_storage_info');
+
+  /// Retrieves the amount of free space in internal storage in bytes.
+  static Future<int> get getStorageFreeSpace async {
+    final int freeSpace = await _channel.invokeMethod('getStorageFreeSpace');
+    return freeSpace;
   }
 
-  Future<int?> getStorageFreeSpace() {
-    return FlutterStorageInfoPlatform.instance.getStorageFreeSpace();
+  /// Retrieves the total space in internal storage in bytes.
+  static Future<int> get getStorageTotalSpace async {
+    final int totalSpace = await _channel.invokeMethod('getStorageTotalSpace');
+    return totalSpace;
   }
 
-  Future<int?> getStorageUsedSpace() {
-    return FlutterStorageInfoPlatform.instance.getStorageUsedSpace();
+  /// Retrieves the used space in internal storage in bytes.
+  static Future<int> get getStorageUsedSpace async {
+    final int usedSpace = await _channel.invokeMethod('getStorageUsedSpace');
+    return usedSpace;
   }
 
-  Future<int?> getStorageTotalSpace() {
-    return FlutterStorageInfoPlatform.instance.getStorageTotalSpace();
+  /// Retrieves the total space in external storage in bytes.
+  static Future<int> get getExternalStorageTotalSpace async {
+    final int totalSpace =
+    await _channel.invokeMethod('getExternalStorageTotalSpace');
+    return totalSpace;
   }
 
-  Future<int?> getExternalStorageTotalSpace() {
-    return FlutterStorageInfoPlatform.instance.getExternalStorageTotalSpace();
+  /// Retrieves the amount of free space in external storage in bytes.
+  static Future<int> get getExternalStorageFreeSpace async {
+    final int freeSpace =
+    await _channel.invokeMethod('getExternalStorageFreeSpace');
+    return freeSpace;
   }
 
-  Future<int?> getExternalStorageFreeSpace() {
-    return FlutterStorageInfoPlatform.instance.getExternalStorageFreeSpace();
+  /// Retrieves the used space in external storage in bytes.
+  static Future<int> get getExternalStorageUsedSpace async {
+    final int usedSpace =
+    await _channel.invokeMethod('getExternalStorageUsedSpace');
+    return usedSpace;
   }
 
-  Future<int?> getExternalStorageUsedSpace() {
-    return FlutterStorageInfoPlatform.instance.getExternalStorageUsedSpace();
+  /// Retrieves the amount of free space in internal storage in megabytes (MB).
+  static Future<double> get getStorageFreeSpaceInMB async {
+    final double freeSpace =
+    await _channel.invokeMethod('getStorageFreeSpaceInMB');
+    return freeSpace;
   }
 
-  Future<double?> getStorageFreeSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance.getStorageFreeSpaceInMB();
+  /// Retrieves the used space in internal storage in megabytes (MB).
+  static Future<double> get getStorageUsedSpaceInMB async {
+    final double usedSpace =
+    await _channel.invokeMethod('getStorageUsedSpaceInMB');
+    return usedSpace;
   }
 
-  Future<double?> getStorageUsedSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance.getStorageUsedSpaceInMB();
+  /// Retrieves the total space in internal storage in megabytes (MB).
+  static Future<double> get getStorageTotalSpaceInMB async {
+    final double totalSpace =
+    await _channel.invokeMethod('getStorageTotalSpaceInMB');
+    return totalSpace;
   }
 
-  Future<double?> getStorageTotalSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance.getStorageTotalSpaceInMB();
+  /// Retrieves the amount of free space in internal storage in gigabytes (GB).
+  static Future<double> get getStorageFreeSpaceInGB async {
+    final double freeSpace =
+    await _channel.invokeMethod('getStorageFreeSpaceInGB');
+    return freeSpace;
   }
 
-  Future<double?> getStorageFreeSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance.getStorageFreeSpaceInGB();
+  /// Retrieves the used space in internal storage in gigabytes (GB).
+  static Future<double> get getStorageUsedSpaceInGB async {
+    final double usedSpace =
+    await _channel.invokeMethod('getStorageUsedSpaceInGB');
+    return usedSpace;
   }
 
-  Future<double?> getStorageUsedSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance.getStorageUsedSpaceInGB();
+  /// Retrieves the total space in internal storage in gigabytes (GB).
+  static Future<double> get getStorageTotalSpaceInGB async {
+    final double totalSpace =
+    await _channel.invokeMethod('getStorageTotalSpaceInGB');
+    return totalSpace;
   }
 
-  Future<double?> getStorageTotalSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance.getStorageTotalSpaceInGB();
+  /// Retrieves the amount of free space in external storage in megabytes (MB).
+  static Future<double> get getExternalStorageFreeSpaceInMB async {
+    final double freeSpace =
+    await _channel.invokeMethod('getExternalStorageFreeSpaceInMB');
+    return freeSpace;
   }
 
-  Future<double?> getExternalStorageTotalSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageTotalSpaceInMB();
+  /// Retrieves the used space in external storage in megabytes (MB).
+  static Future<double> get getExternalStorageUsedSpaceInMB async {
+    final double usedSpace =
+    await _channel.invokeMethod('getExternalStorageUsedSpaceInMB');
+    return usedSpace;
   }
 
-  Future<double?> getExternalStorageFreeSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageFreeSpaceInMB();
+  /// Retrieves the total space in external storage in megabytes (MB).
+  static Future<double> get getExternalStorageTotalSpaceInMB async {
+    final double totalSpace =
+    await _channel.invokeMethod('getExternalStorageTotalSpaceInMB');
+    return totalSpace;
   }
 
-  Future<double?> getExternalStorageUsedSpaceInMB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageUsedSpaceInMB();
+  /// Retrieves the amount of free space in external storage in gigabytes (GB).
+  static Future<double> get getExternalStorageFreeSpaceInGB async {
+    final double freeSpace =
+    await _channel.invokeMethod('getExternalStorageFreeSpaceInGB');
+    return freeSpace;
   }
 
-  Future<double?> getExternalStorageTotalSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageTotalSpaceInGB();
+  /// Retrieves the used space in external storage in gigabytes (GB).
+  static Future<double> get getExternalStorageUsedSpaceInGB async {
+    final double usedSpace =
+    await _channel.invokeMethod('getExternalStorageUsedSpaceInGB');
+    return usedSpace;
   }
 
-  Future<double?> getExternalStorageFreeSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageFreeSpaceInGB();
+  /// Retrieves the total space in external storage in gigabytes (GB).
+  static Future<double> get getExternalStorageTotalSpaceInGB async {
+    final double totalSpace =
+    await _channel.invokeMethod('getExternalStorageTotalSpaceInGB');
+    return totalSpace;
   }
 
-  Future<double?> getExternalStorageUsedSpaceInGB() {
-    return FlutterStorageInfoPlatform.instance
-        .getExternalStorageUsedSpaceInGB();
+  /// Retrieves the size of the specified [directory] in megabytes (MB).
+  static Future<double> getSizeOfDirectoryInMB(String directory) async {
+    final double directorySize = await _channel
+        .invokeMethod('getSizeOfDirectoryInMB', {'directory': directory});
+    return directorySize;
   }
+
+  /// Determines the storage type based on the provided [path].
+  static DeviceStorageType getStorageTypeFromPath(String path) {
+    // Checking if the path starts with internal storage path.
+    return path.startsWith('/storage/emulated/0') == true
+        ? DeviceStorageType.internal
+        : DeviceStorageType.external;
+  }
+
+  /// Calculates the storage usage value based on used and total storage space.
+  ///
+  /// [storageUsed] and [storageTotal] should be in gigabytes (GB).
+  static double getStorageUsageValue(double storageUsed, double storageTotal) {
+    final double storageUsageValue =
+    (((storageUsed / storageTotal) * 100.0) * 0.01);
+    return storageUsageValue;
+  }
+
+  /// Checks if the storage usage is below the specified threshold.
+  ///
+  /// [storageUsageValue] represents the percentage of storage used.
+  /// [threshold] is the threshold value, default is set to 0.98 (98%).
+  static Future<bool> getIsLowOnStorage(DeviceStorageType storageType,
+      {double threshold = 0.98}) async {
+    double storageTotal = 0.0;
+    double storageUsed = 0.0;
+    if (storageType == DeviceStorageType.internal) {
+      storageTotal = await FlutterStorageInfo.getStorageTotalSpaceInGB;
+      storageUsed = await FlutterStorageInfo.getStorageUsedSpaceInGB;
+    } else if (storageType == DeviceStorageType.external) {
+      storageTotal = await FlutterStorageInfo.getExternalStorageTotalSpaceInGB;
+      storageUsed = await FlutterStorageInfo.getExternalStorageUsedSpaceInGB;
+    } else {
+      throw Exception('storageType must be a value of DeviceStorageType');
+    }
+
+    double storageUsageValue = getStorageUsageValue(storageUsed, storageTotal);
+
+    return getIsStorageBelowThreshold(storageUsageValue, threshold);
+  }
+
+  /// Checks if the storage usage is below the specified threshold.
+  static bool getIsStorageBelowThreshold(
+      double storageUsageValue, double threshold) {
+    if (storageUsageValue <= 0.0 || storageUsageValue >= 1.0) {
+      throw Exception(
+          'storageUsageValue must be within the range of 0.0 and 1.0');
+    }
+    if (threshold <= 0.0 || threshold >= 1.0) {
+      throw Exception('threshold must be within the range of 0.0 and 1.0');
+    }
+
+    return storageUsageValue >= threshold;
+  }
+}
+/// Enumeration for device storage types.
+enum DeviceStorageType {
+  /// Internal storage.
+  internal,
+
+  /// External storage.
+  external,
 }
