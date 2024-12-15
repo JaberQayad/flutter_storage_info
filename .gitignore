@@ -1,11 +1,34 @@
+# Flutter/Dart specific
 .dart_tool/
-.idea/
-.packages
 .pub/
 build/
-packages/
+.packages
+
+# IntelliJ/Android Studio
+.idea/
 *.iml
+
+# VS Code
+.vscode/
+
+# Miscellaneous
 *.lock
 *.log
 *.metadata
 *.flutter-plugins
+*.flutter-plugins-dependencies
+
+# Generated files
+*.dart.js
+*.js.map
+*.dart.js.deps
+*.dart.js.tar.gz
+*.info.json
+*.snapshot
+*.symbols
+
+# macOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
