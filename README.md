@@ -110,7 +110,6 @@ print('Is Low on Storage: $isLow');
 ```
 
 ## Screenshot
-
 ![Screenshot](example/screenshot/Screenshot.gif)
 
 ## Permissions

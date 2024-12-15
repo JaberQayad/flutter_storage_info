@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_storage_info/flutter_storage_info.dart';
@@ -79,7 +78,7 @@ class StorageInfoPageState extends State<StorageInfoPage>
     try {
       // Internal Storage Info
       _internalStorageFreeSpace =
-      (await FlutterStorageInfo.storageFreeSpace / (1024 * 1024 * 1024));
+          (await FlutterStorageInfo.storageFreeSpace / (1024 * 1024 * 1024));
       _internalStorageUsedSpace =
           (await FlutterStorageInfo.storageUsedSpace) / (1024 * 1024 * 1024);
       _internalStorageTotalSpace =
@@ -87,11 +86,14 @@ class StorageInfoPageState extends State<StorageInfoPage>
 
       // External Storage Info
       _externalStorageFreeSpace =
-          (await FlutterStorageInfo.externalStorageFreeSpace) / (1024 * 1024 * 1024);
+          (await FlutterStorageInfo.externalStorageFreeSpace) /
+              (1024 * 1024 * 1024);
       _externalStorageUsedSpace =
-          (await FlutterStorageInfo.externalStorageUsedSpace) / (1024 * 1024 * 1024);
+          (await FlutterStorageInfo.externalStorageUsedSpace) /
+              (1024 * 1024 * 1024);
       _externalStorageTotalSpace =
-          (await FlutterStorageInfo.externalStorageTotalSpace) / (1024 * 1024 * 1024);
+          (await FlutterStorageInfo.externalStorageTotalSpace) /
+              (1024 * 1024 * 1024);
 
       // Update the UI with the new data
       setState(() {});
@@ -117,7 +119,6 @@ class StorageInfoPageState extends State<StorageInfoPage>
     } else {
       return Colors.red;
     }
-
   }
 
   Widget _buildStorageSection({
@@ -173,60 +174,60 @@ class StorageInfoPageState extends State<StorageInfoPage>
         centerTitle: true,
         backgroundColor: const Color(0xFF292F2F),
       ),
-      body:  Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildStorageSection(
-                    title: 'Internal Storage',
-                    freeSpace: _internalStorageFreeSpace,
-                    usedSpace: _internalStorageUsedSpace,
-                    totalSpace: _internalStorageTotalSpace,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildStorageSection(
+                  title: 'Internal Storage',
+                  freeSpace: _internalStorageFreeSpace,
+                  usedSpace: _internalStorageUsedSpace,
+                  totalSpace: _internalStorageTotalSpace,
+                ),
+                const SizedBox(height: 30),
+                _buildStorageSection(
+                  title: 'External Storage',
+                  freeSpace: _externalStorageFreeSpace,
+                  usedSpace: _externalStorageUsedSpace,
+                  totalSpace: _externalStorageTotalSpace,
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    _fetchStorageInfo();
+                    _animationController.reset();
+                    _animationController.forward();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                   ),
-                  const SizedBox(height: 30),
-                  _buildStorageSection(
-                    title: 'External Storage',
-                    freeSpace: _externalStorageFreeSpace,
-                    usedSpace: _externalStorageUsedSpace,
-                    totalSpace: _externalStorageTotalSpace,
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
-                      _fetchStorageInfo();
-                      _animationController.reset();
-                      _animationController.forward();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[100],
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
+                  // if the animation is not completed, show a loading indicator
+                  child: Visibility(
+                    visible: _animationController.status !=
+                        AnimationStatus.completed,
+                    replacement: const Text('Refresh'),
+                    child: const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
                       ),
                     ),
-                    // if the animation is not completed, show a loading indicator
-                    child: Visibility(
-                      visible: _animationController.status != AnimationStatus.completed,
-                      replacement: const Text('Refresh'
-                    ),
-                      child: const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
 }

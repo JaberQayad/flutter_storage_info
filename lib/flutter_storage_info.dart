@@ -22,7 +22,8 @@ class FlutterStorageInfo {
 
   /// Retrieves the total space in external storage in bytes.
   static Future<int> get externalStorageTotalSpace async {
-    return await _channel.invokeMethod<int>('getExternalStorageTotalSpace') ?? 0;
+    return await _channel.invokeMethod<int>('getExternalStorageTotalSpace') ??
+        0;
   }
 
   /// Retrieves the amount of free space in external storage in bytes.
@@ -48,8 +49,8 @@ class FlutterStorageInfo {
   /// Retrieves the size of the specified [directory] in megabytes (MB).
   static Future<double> getSizeOfDirectoryInMB(String directory) async {
     return await _channel.invokeMethod<double>('getSizeOfDirectoryInMB', {
-      'directory': directory,
-    }) ??
+          'directory': directory,
+        }) ??
         0.0;
   }
 
@@ -83,8 +84,10 @@ class FlutterStorageInfo {
       storageTotal = await getStorageSpaceInGB('getStorageTotalSpaceInGB');
       storageUsed = await getStorageSpaceInGB('getStorageUsedSpaceInGB');
     } else {
-      storageTotal = await getStorageSpaceInGB('getExternalStorageTotalSpaceInGB');
-      storageUsed = await getStorageSpaceInGB('getExternalStorageUsedSpaceInGB');
+      storageTotal =
+          await getStorageSpaceInGB('getExternalStorageTotalSpaceInGB');
+      storageUsed =
+          await getStorageSpaceInGB('getExternalStorageUsedSpaceInGB');
     }
 
     double usage = calculateStorageUsage(storageUsed, storageTotal);
