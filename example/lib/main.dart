@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_storage_info/flutter_storage_info.dart';
@@ -41,6 +42,7 @@ class StorageInfoPageState extends State<StorageInfoPage>
 
   late Timer _timer;
   late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -55,10 +57,15 @@ class StorageInfoPageState extends State<StorageInfoPage>
     // Set up animation controller
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 5),
     );
 
-    _animationController.repeat(reverse: true);
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _animationController.forward();
   }
 
   @override
@@ -69,23 +76,28 @@ class StorageInfoPageState extends State<StorageInfoPage>
   }
 
   Future<void> _fetchStorageInfo() async {
-    // Internal Storage Info
-    _internalStorageFreeSpace =
-        await FlutterStorageInfo.getStorageFreeSpaceInGB;
-    _internalStorageUsedSpace =
-        await FlutterStorageInfo.getStorageUsedSpaceInGB;
-    _internalStorageTotalSpace =
-        await FlutterStorageInfo.getStorageTotalSpaceInGB;
+    try {
+      // Internal Storage Info
+      _internalStorageFreeSpace =
+      (await FlutterStorageInfo.storageFreeSpace / (1024 * 1024 * 1024));
+      _internalStorageUsedSpace =
+          (await FlutterStorageInfo.storageUsedSpace) / (1024 * 1024 * 1024);
+      _internalStorageTotalSpace =
+          (await FlutterStorageInfo.storageTotalSpace) / (1024 * 1024 * 1024);
 
-    // External Storage Info
-    _externalStorageFreeSpace =
-        await FlutterStorageInfo.getExternalStorageFreeSpaceInGB;
-    _externalStorageUsedSpace =
-        await FlutterStorageInfo.getExternalStorageUsedSpaceInGB;
-    _externalStorageTotalSpace =
-        await FlutterStorageInfo.getExternalStorageTotalSpaceInGB;
+      // External Storage Info
+      _externalStorageFreeSpace =
+          (await FlutterStorageInfo.externalStorageFreeSpace) / (1024 * 1024 * 1024);
+      _externalStorageUsedSpace =
+          (await FlutterStorageInfo.externalStorageUsedSpace) / (1024 * 1024 * 1024);
+      _externalStorageTotalSpace =
+          (await FlutterStorageInfo.externalStorageTotalSpace) / (1024 * 1024 * 1024);
 
-    setState(() {});
+      // Update the UI with the new data
+      setState(() {});
+    } catch (e) {
+      debugPrint("Error fetching storage info: $e");
+    }
   }
 
   String _formatSpace(double space) {
@@ -96,15 +108,56 @@ class StorageInfoPageState extends State<StorageInfoPage>
     }
   }
 
-  Color _getSpaceColor(double space) {
-    // change the color every 50 MB
-    if (space < 0.05) {
-      return Colors.red;
-    } else if (space < 0.1) {
+  Color _getSpaceColor(double freeSpace) {
+    // add colors to all the possible states
+    if (freeSpace > 10) {
+      return Colors.green;
+    } else if (freeSpace > 5) {
       return Colors.orange;
     } else {
-      return Colors.green;
+      return Colors.red;
     }
+
+  }
+
+  Widget _buildStorageSection({
+    required String title,
+    required double freeSpace,
+    required double usedSpace,
+    required double totalSpace,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 15),
+        CircularProgressIndicator(
+          value: totalSpace > 0 ? usedSpace / totalSpace * _animation.value : 0,
+          valueColor: AlwaysStoppedAnimation<Color>(_getSpaceColor(freeSpace)),
+          backgroundColor: Colors.grey[300],
+          strokeWidth: 15,
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Free: ${_formatSpace(freeSpace * _animation.value)}',
+          style: TextStyle(
+            color: _getSpaceColor(freeSpace),
+            fontSize: 18,
+          ),
+        ),
+        Text(
+          'Used: ${_formatSpace(usedSpace * _animation.value)}',
+          style: const TextStyle(fontSize: 18),
+        ),
+        Text(
+          'Total: ${_formatSpace(totalSpace * _animation.value)}',
+          style: const TextStyle(fontSize: 18),
+        ),
+      ],
+    );
   }
 
   @override
@@ -112,7 +165,7 @@ class StorageInfoPageState extends State<StorageInfoPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Flutter Storage Info Example',
+          'Flutter Storage Info',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -120,83 +173,60 @@ class StorageInfoPageState extends State<StorageInfoPage>
         centerTitle: true,
         backgroundColor: const Color(0xFF292F2F),
       ),
-      body: Center(
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xFFE0E0E0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Internal Storage',
-                style: TextStyle(fontSize: 20),
+      body:  Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildStorageSection(
+                    title: 'Internal Storage',
+                    freeSpace: _internalStorageFreeSpace,
+                    usedSpace: _internalStorageUsedSpace,
+                    totalSpace: _internalStorageTotalSpace,
+                  ),
+                  const SizedBox(height: 30),
+                  _buildStorageSection(
+                    title: 'External Storage',
+                    freeSpace: _externalStorageFreeSpace,
+                    usedSpace: _externalStorageUsedSpace,
+                    totalSpace: _externalStorageTotalSpace,
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      _fetchStorageInfo();
+                      _animationController.reset();
+                      _animationController.forward();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[100],
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                    ),
+                    // if the animation is not completed, show a loading indicator
+                    child: Visibility(
+                      visible: _animationController.status != AnimationStatus.completed,
+                      replacement: const Text('Refresh'
+                    ),
+                      child: const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              CircularProgressIndicator(
-                value: _internalStorageTotalSpace > 0
-                    ? _internalStorageUsedSpace / _internalStorageTotalSpace
-                    : 0,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _getSpaceColor(_internalStorageFreeSpace),
-                ),
-                backgroundColor: Colors.grey,
-                strokeWidth: 10,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Free: ${_formatSpace(_internalStorageFreeSpace)}',
-                style: TextStyle(
-                  color: _getSpaceColor(_internalStorageFreeSpace),
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                'Used: ${_formatSpace(_internalStorageUsedSpace)}',
-                style: const TextStyle(fontSize: 20),
-              ),
-              Text(
-                'Total: ${_formatSpace(_internalStorageTotalSpace)}',
-                style: const TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'External Storage',
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              CircularProgressIndicator(
-                value: _externalStorageTotalSpace > 0
-                    ? _externalStorageUsedSpace / _externalStorageTotalSpace
-                    : 0,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _getSpaceColor(_externalStorageFreeSpace),
-                ),
-                backgroundColor: Colors.grey,
-                strokeWidth: 10,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Free: ${_formatSpace(_externalStorageFreeSpace)}',
-                style: TextStyle(
-                  color: _getSpaceColor(_externalStorageFreeSpace),
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                'Used: ${_formatSpace(_externalStorageUsedSpace)}',
-                style: const TextStyle(fontSize: 20),
-              ),
-              Text(
-                'Total: ${_formatSpace(_externalStorageTotalSpace)}',
-                style: const TextStyle(fontSize: 20),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
     );
   }
 }
