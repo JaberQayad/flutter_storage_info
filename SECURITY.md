@@ -28,7 +28,8 @@ For Android, add the following permissions in `AndroidManifest.xml`:
 ```xml
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+```
+⚠️ Note: As of Android 10+ (API level 29+), scoped storage changes apply. Adjust your permission handling accordingly.
 
 Best Practices
 Always check and request storage permissions at runtime.
