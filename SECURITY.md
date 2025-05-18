@@ -31,7 +31,7 @@ For Android, add the following permissions in `AndroidManifest.xml`:
 ```
 ⚠️ Note: As of Android 10+ (API level 29+), scoped storage changes apply. Adjust your permission handling accordingly.
 
-Best Practices
+## Best Practices
 Always check and request storage permissions at runtime.
 
 Validate permissions before accessing storage directories.
@@ -42,5 +42,5 @@ Avoid hardcoding paths and ensure compatibility across Android versions.
 
 Regularly test and audit permission-related flows in your app.
 
-Dependencies
+## Dependencies
 This plugin has no external runtime dependencies, minimizing its vulnerability surface. Developers are advised to audit all dependencies used in their app ecosystem.
